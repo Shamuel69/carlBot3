@@ -24,20 +24,26 @@ class tokenizer():
             for punct in [".", "?", "!"]:
                 try:
                     if text.index(punct):
-                         values = (text, i)
+                         values = (text, i, punct)
                          possible_text.append(values)
                 except ValueError:
                     pass
         
-        for data_gathered in possible_text:
+        adjusted_text = ""
+
+        for iter, data_gathered in enumerate(possible_text):
             word =  data_gathered[0]
             punct = data_gathered[0][-1]
             counted = word.count(punct)
             
-            if counted >= 2:
-                if word == ".":
-                    
-            print(counted)
+            unajusted_text = self.unspaced_text.find(word)
+            print(unajusted_text)
+            
+            if counted > 2:
+                if iter > 0:
+                    adjusted_text += self.unspaced_text[:data_gathered[1]]
+
+            print(adjusted_text)
         
         return possible_text
 
