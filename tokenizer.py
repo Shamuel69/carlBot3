@@ -1,5 +1,17 @@
 import re
 
+def punct_grabber(sentence):
+    word = ''
+
+    for char in sentence:
+        if char.isalnum():
+            word+= char
+        else:
+            if char in [".", "!", "?"]:
+                word+="[punct]"
+            word+="_"
+    
+    return word
 
 
 class tokenizer():
@@ -12,16 +24,18 @@ class tokenizer():
     def calc_punctuations(self):
         basematrix = []
         for i in [".", "?", "!"]:
-            identified = [b for b, c in enumerate(self.unspaced_text) if c == i]
-            basematrix.append(identified)
-            yield identified
-        print(f"output: {basematrix}")
+            try:
+                self.unspaced_text.index(i)
+                basematrix.append(i)
+            except ValueError:
+                pass
+        return basematrix
 
     def sentence_identifier(self):
         possible_text = []#if it thinks the text needs change then append it to the list
-        
+        pulled_punctuation = self.calc_punctuations()
         for i, text in enumerate(self.spaced_text):
-            for punct in [".", "?", "!"]:
+            for punct in pulled_punctuation:
                 try:
                     if text.index(punct):
                          values = (text, i, punct)
@@ -50,4 +64,5 @@ class tokenizer():
             
 
 if __name__ == "__main__":
-    print(tokenizer("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!").sentence_identifier())
+    # print(tokenizer("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!").sentence_identifier())
+    print(punct_grabber("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!"))
