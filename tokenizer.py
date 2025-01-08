@@ -1,18 +1,20 @@
 import re
-
+from collections import Counter
 def punct_grabber(sentence):
     word = ''
-
+    punct = [".", "!", "?"]
     for char in sentence:
         if char.isalnum():
             word+= char
         else:
-            if char in [".", "!", "?"]:
+            if char in punct:
+
                 word+="[punct]"
-            word+="_"
+            
     
     return word
-
+def split_words_and_punctuation_regex(sentence):
+    return re.findall(r'\w+|[^\w\s]', sentence)
 
 class tokenizer():
     def __init__(self, text):
@@ -23,12 +25,11 @@ class tokenizer():
 
     def calc_punctuations(self):
         basematrix = []
-        for i in [".", "?", "!"]:
-            try:
-                self.unspaced_text.index(i)
-                basematrix.append(i)
-            except ValueError:
-                pass
+        for i, word in enumerate(self.spaced_text):
+            for iter, punct in enumerate(self.look_for_punctuation):
+                if word.find(punct)>0:
+                    basematrix.append([punct, i])
+                
         return basematrix
 
     def sentence_identifier(self):
@@ -65,4 +66,7 @@ class tokenizer():
 
 if __name__ == "__main__":
     # print(tokenizer("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!").sentence_identifier())
-    print(punct_grabber("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!"))
+    print(tokenizer("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!").calc_punctuations())
+
+
+    
