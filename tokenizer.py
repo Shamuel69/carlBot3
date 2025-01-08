@@ -11,7 +11,6 @@ def punct_grabber(sentence):
 
                 word+="[punct]"
             
-    
     return word
 def split_words_and_punctuation_regex(sentence):
     return re.findall(r'\w+|[^\w\s]', sentence)
@@ -26,9 +25,32 @@ class tokenizer():
     def calc_punctuations(self):
         basematrix = []
         for i, word in enumerate(self.spaced_text):
-            for iter, punct in enumerate(self.look_for_punctuation):
-                if word.find(punct)>0:
-                    basematrix.append([punct, i])
+            word = word
+            for punct in self.look_for_punctuation:
+                char_loc = word.find(punct)
+                if char_loc>0:
+                    last_num = 0
+                    times_found = 0
+                    for iter, char in enumerate(word):
+                        if char == punct:
+                            if iter-last_num == 1:
+                                times_found += 1
+                                last_num = iter
+                                if times_found >= 3:
+                                    if punct == ".":
+                                        basematrix.extend([word.strip(word[iter:]), f"[ex-]"]) 
+                                    
+
+                                    print(word)
+                                continue
+
+                            times_found += 1
+                            last_num = iter
+            basematrix.append(word)
+                    # punct_count = Counter(char for char in word if char == punct)
+
+                    # print(punct_count)
+                    # basematrix.append([punct, i])
                 
         return basematrix
 
