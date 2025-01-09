@@ -23,36 +23,49 @@ class tokenizer():
 
 
     def calc_punctuations(self):
-        basematrix = []
-        for i, word in enumerate(self.spaced_text):
-            word = word
+        base_tokenizer = []
+        con_or_not = False
+        punct_count = lambda words, puncts: list(words).count(puncts)
+        for word in self.spaced_text:
             for punct in self.look_for_punctuation:
-                char_loc = word.find(punct)
-                if char_loc>0:
-                    last_num = 0
-                    times_found = 0
-                    for iter, char in enumerate(word):
-                        if char == punct:
-                            if iter-last_num == 1:
-                                times_found += 1
-                                last_num = iter
-                                if times_found >= 3:
-                                    if punct == ".":
-                                        basematrix.extend([word.strip(word[iter:]), f"[ex-]"]) 
+                if punct_count(word, punct) >= 3:
+                    base_tokenizer.extend([word.strip(punct), f"{punct}{punct}{punct}"]) 
+                    print("funny time")
+                    con_or_not = True
+                    continue
+            if not con_or_not:
+                base_tokenizer.append(word)
+        return base_tokenizer
+        # basematrix = []
+        # for i, word in enumerate(self.spaced_text):
+        #     word = word
+        #     for punct in self.look_for_punctuation:
+        #         char_loc = word.find(punct)
+        #         if char_loc>0:
+        #             last_num = 0
+        #             times_found = 0
+        #             for iter, char in enumerate(word):
+        #                 if char == punct:
+        #                     if iter-last_num == 1:
+        #                         times_found += 1
+        #                         last_num = iter
+        #                         if times_found >= 3:
+        #                             if punct == ".":
+        #                                 basematrix.extend([word.strip(word[iter:]), f"[ex-]"]) 
                                     
 
-                                    print(word)
-                                continue
+        #                             print(word)
+        #                         continue
 
-                            times_found += 1
-                            last_num = iter
-            basematrix.append(word)
+        #                     times_found += 1
+        #                     last_num = iter
+        #     basematrix.append(word)
                     # punct_count = Counter(char for char in word if char == punct)
 
                     # print(punct_count)
                     # basematrix.append([punct, i])
                 
-        return basematrix
+        
 
     def sentence_identifier(self):
         possible_text = []#if it thinks the text needs change then append it to the list
