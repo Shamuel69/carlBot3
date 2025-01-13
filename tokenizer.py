@@ -1,19 +1,6 @@
-import re
-from collections import Counter
-def punct_grabber(sentence):
-    word = ''
-    punct = [".", "!", "?"]
-    for char in sentence:
-        if char.isalnum():
-            word+= char
-        else:
-            if char in punct:
 
-                word+="[punct]"
-            
-    return word
-def split_words_and_punctuation_regex(sentence):
-    return re.findall(r'\w+|[^\w\s]', sentence)
+###The Tokenizer to my AI###
+#===========================#
 
 class tokenizer():
     def __init__(self, text):
@@ -21,19 +8,35 @@ class tokenizer():
         self.spaced_text = text.split()
         self.look_for_punctuation = [".", "?", "!"]
 
+    
 
+
+    def find_contraction(self, word):
+        con_dict = {"contractions": ["'s", "'m", "'ve", "'ll", "'re", "'d"], "replacing": "n't"}
+        for i in con_dict.keys():
+            for item in con_dict[i]:
+                if word.endswith(item) and "'" in word:
+                    print(f"found item {item} in {word}  |  {word} {item}")
+                    break
+        
+        return ([word[:word.find(item)], item], True)
+            
     def calc_punctuations(self):
+        
         base_tokenizer = []
-        con_or_not = False
         punct_count = lambda words, puncts: list(words).count(puncts)
         for word in self.spaced_text:
+            con_or_not = False
+            if self.find_contraction(word):
+                base_tokenizer.extend(self.find_contraction(word)[0])
+
             for punct in self.look_for_punctuation:
                 if punct_count(word, punct) >= 3:
                     base_tokenizer.extend([word.strip(punct), f"{punct}{punct}{punct}"]) 
-                    print("funny time")
                     con_or_not = True
                     continue
             if not con_or_not:
+                
                 base_tokenizer.append(word)
         return base_tokenizer
         # basematrix = []
