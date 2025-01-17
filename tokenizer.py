@@ -8,18 +8,27 @@ class tokenizer():
         self.spaced_text = text.split()
         self.look_for_punctuation = [".", "?", "!"]
 
-    def find_contraction(self, word):
+    @staticmethod
+    def find_contraction(word) -> tuple:
         con_dict = {"contractions": ["'s", "'m", "'ve", "'ll", "'re", "'d"], "replacing": "n't"}
         for i in con_dict.keys():
             for item in con_dict[i]:
                 if word.endswith(item) and "'" in word:
                     return ([word[:word.find(item)], item], True)
 
-    def calc_punctuations(self):
+        for item in con_dict["contractions"]:
+            if word.endswith(item):
+                return ([word[:word.find(item)], item], True)        
+
+        if word.endswith(con_dict["replacing"]):
+            return ([word[:word.find(con_dict["replacing"])], con_dict["replacing"]], True)
+
+    def calc_punctuations(self) -> list:
         base_tokenizer = []
         punct_count = lambda words, puncts: list(words).count(puncts)
         for word in self.spaced_text:
             con_or_not = False
+            
             if self.find_contraction(word):
                 base_tokenizer.extend(self.find_contraction(word)[0])
                 con_or_not = True    
@@ -35,9 +44,8 @@ class tokenizer():
             if not con_or_not:
                 base_tokenizer.append(word)
         return base_tokenizer
-        
 
-    def sentence_identifier(self):
+    def sentence_identifier(self) -> list:
         possible_text = []#if it thinks the text needs change then append it to the list
         pulled_punctuation = self.calc_punctuations()
         for i, text in enumerate(self.spaced_text):
@@ -67,7 +75,7 @@ class tokenizer():
         
         return possible_text
 
-            
+__all__ = ["tokenizer", ""]
 
 if __name__ == "__main__":
     # print(tokenizer("The hairy dog's head just does that bro. i dont know what else to say man... UHHHH DOO DOO DEE DA? who the fuck are you? AND WHY DO YOU HAVE A GUN!!!!").sentence_identifier())
