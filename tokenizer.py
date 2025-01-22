@@ -21,7 +21,7 @@ class tokenizer():
                 return ([word[:word.find(item)], item], True)        
 
         if word.endswith(con_dict["replacing"]):
-            return ([word[:word.find(con_dict["replacing"])], con_dict["replacing"]], True)
+            return [word[:word.find(con_dict["replacing"])], con_dict["replacing"]], True
 
     def calc_punctuations(self) -> list:
         base_tokenizer = []

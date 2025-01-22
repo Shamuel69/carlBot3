@@ -45,6 +45,7 @@ class Data:
     #must calculate the any difference in the data then replace
     
     def pull_pickle(self, is_folder=True, bin_set=False):
+        #bin_set: binary_set
         data = []
         if is_folder is True:
             if bin_set:
@@ -97,7 +98,7 @@ if __name__ == "__main__":
     ]
     weiner = Data(r"lib\JSON-FILES\puke.pkl")
     weiner.pull_pickle(is_folder=False)
-    with open("lib/JSON-FILES/puke.pkl", "rb") as f:
+    with open("lib/JSON-FILES/puke.pkl", "r") as f:
         print(f.read())
     
 
