@@ -4,18 +4,19 @@ import pickle
 #to import data from, JSON file
 
 class Data:
-    def __init__(self, folder_PATH: str):
+    def __init__(self, folder_PATH: str, **kwargs):
         self.binary_set = 0
         try:
             self.file_list = os.listdir(rf"{folder_PATH}")
         except:
             self.file_list = []
         self.PATH = folder_PATH
+        self.is_folder = kwargs.get("is_folder", False)
         
 
-    def retrieve(self, is_folder=False, bin_set=False):
+    def retrieve(self, bin_set=False):
         data = []
-        if is_folder is True:
+        if self.is_folder:
             if bin_set:
                 for item in self.file_list:
                     with open(f"{self.PATH}/{item}", "rb") as read_file:
@@ -37,17 +38,17 @@ class Data:
     #write inputed data into a file in binary
 
     def push_data(self, data, is_folder=True):
-        if is_folder is True:
+        if self.is_folder:
             pass
         with open(f"{self.PATH}", "wb") as open_file:
             pickle.dump(data, open_file)
         pass 
     #must calculate the any difference in the data then replace
     
-    def pull_pickle(self, is_folder=True, bin_set=False):
+    def pull_pickle(self, bin_set=False, **kwargs):
         #bin_set: binary_set
         data = []
-        if is_folder is True:
+        if (self.is_folder is True) or kwargs.get("is_folder", False):
             if bin_set:
                 for item in self.file_list:
                     with open(f"{self.PATH}/{item}", "rb") as read_file:
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     ]
     weiner = Data(r"lib\JSON-FILES\puke.pkl")
     weiner.pull_pickle(is_folder=False)
-    with open("lib/JSON-FILES/puke.pkl", "r") as f:
+    with open("lib/JSON-FILES/puke.pkl", "rb") as f:
         print(f.read())
     
 
