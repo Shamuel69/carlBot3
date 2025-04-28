@@ -74,7 +74,7 @@ class Data:
     @staticmethod
     def push_pickle(file_name, push_bin=True):
         """Saves data to a binary or text file using pickle.
-
+        
             Args:
                 file_name (str): The name of the file or directory to which data should be saved.
                 push_bin (bool, optional): If True, save in binary mode; if False, save in text mode. Defaults to True.
