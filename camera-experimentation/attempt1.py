@@ -1,6 +1,6 @@
 import tkinter as ttk
 from tkinter import *
-
+from commands.attempt1_coms import App_func
 
 root = Tk()
 root.title("embedded app")
@@ -23,7 +23,7 @@ menubar.add_cascade(label="Edit", menu=menu_edit)
 
 menu_file.add_command(label='New', command=lambda: print("new"))
 menu_file.add_separator()
-menu_file.add_command(label='Open', command=lambda: print("open"))
+menu_file.add_command(label='Open', command=lambda: App_func().openfile)
 menu_file.add_command(label='Save', command=lambda: print("save"))
 menu_file.add_command(label='Exit', command=lambda: print("exit"))
 
