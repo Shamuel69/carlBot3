@@ -37,6 +37,11 @@ button_color.pack()
 
 color_picker = commands.ColorPicker(root)
 color_picker.pack()
+
+hsv_values_var = StringVar()
+hsv_values = color_picker.update_hsv_values(root, hsv_values_var)
+
+hsv_label = ttk.Label(root, textvariable=f"H: {hsv_values[0]*360:.2f}, S: {hsv_values[1]*100:.2f}, V: {hsv_values[2]*100:.2f}%").pack() # f"H: {hsv_values()[0]}, S: {}%, V: {}%")
 # ++++++++++++++++++++++++++++++++++++++++
 
 root.mainloop()

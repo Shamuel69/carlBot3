@@ -33,7 +33,7 @@ class ColorPicker(tk.Canvas):
             for x in range(self.width):
                 hue = x / self.width
                 saturation = 1.0
-                value = y / self.height
+                value = y / self.heights
                 r, g, b = colorsys.hsv_to_rgb(hue, saturation, value)
                 self.create_rectangle(x, y, x + 1, y + 1, fill="#%02x%02x%02x" % (int(r * 255), int(g * 255), int(b * 255)))
 
@@ -44,7 +44,13 @@ class ColorPicker(tk.Canvas):
         s = y / self.height
         v = 1
         self.hsv = (h,s,v)
-        self.master.label.config(text=f"H:{h*360:.2f}, S: {s*100:.2f}%, V: {v*100:.2f}%")
+        return self.hsv
+        # self.master.label.config(text=f"H:{h*360:.2f}, S: {s*100:.2f}%, V: {v*100:.2f}%")
+    @staticmethod
+    def update_hsv_values(root, stringvar):
+        hsv_values = ColorPicker(root).get_color()
+        stringvar.set(f"H: {hsv_values[0]*360:.2f}, S: {hsv_values[1]*100:.2f}, V: {hsv_values[2]*100:.2f}%")
+
 
 def color(self):
     color_chosen = colorchooser.askcolor(title="Select color")
