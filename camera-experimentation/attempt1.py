@@ -1,6 +1,7 @@
 import tkinter as ttk
 from tkinter import *
 from commands.attempt1_coms import App_func
+import commands.attempt1_coms as commands
 
 root = Tk()
 root.title("embedded app")
@@ -27,6 +28,15 @@ menu_file.add_command(label='Open', command=lambda: App_func().openfile)
 menu_file.add_command(label='Save', command=lambda: print("save"))
 menu_file.add_command(label='Exit', command=lambda: print("exit"))
 
+# ++++++++++++++++++++++++++++++++++++++++
+# actual color picker
+
+button_color = ttk.Button(root, text="Pick color", command=lambda: commands.color)
+
+button_color.pack()
+
+color_picker = commands.ColorPicker(root)
+color_picker.pack()
 # ++++++++++++++++++++++++++++++++++++++++
 
 root.mainloop()
