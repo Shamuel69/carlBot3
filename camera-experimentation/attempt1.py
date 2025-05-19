@@ -32,16 +32,20 @@ menu_file.add_command(label='Exit', command=lambda: print("exit"))
 # actual color picker
 
 button_color = ttk.Button(root, text="Pick color", command=lambda: commands.color)
-
 button_color.pack()
 
-color_picker = commands.ColorPicker(root)
-color_picker.pack()
+# color_picker = commands.ColorPicker(root)
+# color_picker.pack()
+# color_picker.draw_gradient()
 
-hsv_values_var = StringVar()
-hsv_values = color_picker.update_hsv_values(root, hsv_values_var)
+# hsv_values_var = StringVar()
 
-hsv_label = ttk.Label(root, textvariable=f"H: {hsv_values[0]*360:.2f}, S: {hsv_values[1]*100:.2f}, V: {hsv_values[2]*100:.2f}%").pack() # f"H: {hsv_values()[0]}, S: {}%, V: {}%")
+
+# hsv_values_var.set(f"mouse position: {(color_picker.get_color)}")
+# hsv_label = ttk.Label(root, textvariable=hsv_values_var).pack() # f"H: {hsv_values()[0]}, S: {}%, V: {}%")
+
 # ++++++++++++++++++++++++++++++++++++++++
 
+picker = commands.colorwheel()
+picker.run()
 root.mainloop()
