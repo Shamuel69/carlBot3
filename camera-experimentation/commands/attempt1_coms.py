@@ -8,16 +8,7 @@ from PIL import Image, ImageTk
 
 class App_func:
     def __init__(self):
-        self.openfile = self.open()
-
-    def open(self):
-        root = tk.Tk()
-        root.withdraw()
-
-        file_path = filedialog.askopenfilename()
-
-        # filedialog.askopenfilename()
-        print(f"file_path: {file_path}")
+        self.Rnum = 
 
 
 
@@ -63,17 +54,21 @@ class colorwheel:
             for y in range(height):
                 r = int((x / width) * 255)
                 g = int((y / height) * 255)
-                b = 150
+                b = 225
                 img.putpixel((x, y), (r, g, b))
         return img
     
     def get_color(self, event):
         x, y = event.x, event.y
         if 0 <= x < self.width and 0 <= y < self.height:
-            rgb = self.img.getpixel((x, y))
+            rgb = self.img_data.getpixel((x, y))
             hex_color = '#%02x%02x%02x' % rgb
             print(f"selected color: {hex_color}")
             self.label.config(text=f"selected color: {hex_color}")
+    
+    def colorlabel():
+        #make an adjustable rgb slider that changes the color
+        pass
 
     def run(self):
         self.root.mainloop()
