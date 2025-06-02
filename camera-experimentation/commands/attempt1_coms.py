@@ -39,7 +39,7 @@ class colorwheel:
         
         #reset button
         self.reset_button = tk.Button(self.left_panel, text="Reset", command=self.reset)
-        self.reset_button.grid(row=2, column=0, pady=10)
+        self.reset_button.pack(pady=10)
 
         #side color panel
         self.label = tk.Label(self.right_panel, text="Click a color", font=("Arial", 14), width=20)
@@ -69,6 +69,7 @@ class colorwheel:
         self.canvas = tk.Canvas(self.left_panel, width=self.width, height=self.height)
         self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
         self.canvas.image = self.photo_image
+        print(self.scale_data[1])
     
     # def generate_gradient_image(self, width, height):
     #     img = Image.new("RGB", (width, height))
