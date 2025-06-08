@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, colorchooser
 import colorsys
 from PIL import Image, ImageTk
-
+import math
 ## functions for menus in attempt1.py
 
 class colorwheel:
@@ -22,7 +22,7 @@ class colorwheel:
         #sliders
         self.scale1 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="r")
         self.scale2 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="g")
-        self.scale3 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="b")
+        self.scale3 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="b", command=lambda x: self.generate_gradient_image(width, height))
         self.scale1.grid(row= 0, column=1, pady=7)
         self.scale2.grid(row= 1, column=1, pady=7)
         self.scale3.grid(row= 2, column=1, pady=7)
@@ -31,11 +31,13 @@ class colorwheel:
         self.img_data = self.generate_gradient_image(width, height)
         self.photo_image = ImageTk.PhotoImage(self.img_data)
 
-        self.canvas = tk.Canvas(self.left_panel, width=width, height=height)
-        self.canvas.pack()
-        self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
-        self.canvas.image = self.photo_image
-        self.canvas.bind("<Button-1>", self.get_color)
+        self.reset()
+
+        # self.canvas = tk.Canvas(self.left_panel, width=width, height=height)
+        # self.canvas.pack()
+        # self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
+        # self.canvas.image = self.photo_image
+        # self.canvas.bind("<Button-1>", self.get_color)
         
         #reset button
         self.reset_button = tk.Button(self.left_panel, text="Reset", command=self.reset)
@@ -56,20 +58,30 @@ class colorwheel:
         img = Image.new("RGB", (width, height))
         for x in range(width):
             for y in range(height):
-                r = self.scale_data[0]
-                g = self.scale_data[1]
-                b = self.scale_data[2]
+                r = int((self.scale1.get()/width)*(x/width)*(y/height)*255)
+                g = int((self.scale2.get()/width)*(x/width)*(y/height)*255)
+                b = int((self.scale2.get()/width)*(x/width)*(y/height)*255)
                 img.putpixel((x, y), (r, g, b))
         return img
     
     def reset(self):
+        
         self.img_data = self.generate_gradient_image(self.width, self.height)
         self.photo_image = ImageTk.PhotoImage(self.img_data)
 
         self.canvas = tk.Canvas(self.left_panel, width=self.width, height=self.height)
-        self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
-        self.canvas.image = self.photo_image
-        print(self.scale_data[1])
+        self.canvas.pack()
+        self.img_item = self.canvas.create_image(0, 0, anchor="nw", image=self.photo_image)
+
+        try:
+            self.canvas.itemconfig(self.img_item, image=self.photo_image)
+            self.canvas.image = self.photo_image
+            print(1)
+        except:
+            self.canvas.image = self.photo_image
+            print(2)
+
+        print(self.get_scale_values())
     
     # def generate_gradient_image(self, width, height):
     #     img = Image.new("RGB", (width, height))
@@ -83,8 +95,6 @@ class colorwheel:
     
     def get_scale_values(self):
         r = self.scale1.get()
-        g = self.scale2.get()
-        g = self.scale2.set(200)
         g = self.scale2.get()
         b = self.scale3.get()
         return r, g, b
