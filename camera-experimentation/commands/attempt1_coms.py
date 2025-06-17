@@ -60,11 +60,17 @@ class colorwheel:
             for y in range(height):
                 r = int((self.scale1.get()/width)*(x/width)*(y/height)*255)
                 g = int((self.scale2.get()/width)*(x/width)*(y/height)*255)
-                b = int((self.scale2.get()/width)*(x/width)*(y/height)*255)
+                b = int((self.scale3.get()/width)*(x/width)*(y/height)*255)
                 img.putpixel((x, y), (r, g, b))
         return img
     
     def reset(self):
+        # gradients = [
+        # (self.scale1.get(), self.scale2.get(), self.scale3.get()),
+        # (self.scale2.get(), self.scale3.get(), self.scale1.get()),
+        # (self.scale3.get(), self.scale1.get(), self.scale2.get()),
+        # ]
+
         
         self.img_data = self.generate_gradient_image(self.width, self.height)
         self.photo_image = ImageTk.PhotoImage(self.img_data)
