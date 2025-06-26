@@ -24,12 +24,17 @@ def bingus(longways:int):
 def playing_with_matrix(n:int, Width:int):
     matrix = []
     mini_list=[]
-    for i in range(n):
+    for i in range(n+1):
         mini_list.append(i)
-        if i % Width:
+        if i % Width == 0:
             matrix.append(mini_list)
-            
-            print("fuck yeah")
+            mini_list=[]
+            continue
+        if i==n:
+            mini_list.extend([0]*(Width-n%Width))
+            matrix.append(mini_list)
+    matrix = matrix[1:]
+    return matrix
 
-
-bingus(100)
+# bingus(100)
+print(playing_with_matrix(360, 6))
