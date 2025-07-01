@@ -5,6 +5,9 @@ def bingus(longways:int):
     var = []
     
     max_range = 255
+    mother_exponent = -11.62413
+    slope = 202.14817
+
 
     for i in range(longways):
         try:
