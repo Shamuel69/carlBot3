@@ -1,8 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, colorchooser
-import colorsys
 from PIL import Image, ImageTk
-import math
 
 class colorwheel:
     def __init__(self, width=500, height=200):
@@ -17,12 +14,17 @@ class colorwheel:
         self.right_panel = tk.Frame(self.root, width=width, height=height, background="#3a2865")
         self.right_panel.pack(side="right")
 
+        self.color_canvas = tk.Label(self.right_panel, width=width*.75, height=75, background="#000000", command=self.get_color)
+        self.color_canvas.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+
+
+        #sliders
         self.scale1 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="r")
         self.scale2 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="g")
         self.scale3 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="b")
-        self.scale1.grid(row= 0, column=1, pady=7)
-        self.scale2.grid(row= 1, column=1, pady=7)
-        self.scale3.grid(row= 2, column=1, pady=7)
+        self.scale1.grid(row= 2, column=1, pady=7)
+        self.scale2.grid(row= 3, column=1, pady=7)
+        self.scale3.grid(row= 4, column=1, pady=7)
 
         self.img_data = self.generate_gradient_image(width, height)
         self.photo_image = ImageTk.PhotoImage(self.img_data)
@@ -36,7 +38,12 @@ class colorwheel:
         self.label = tk.Label(self.right_panel, text="Click a color", font=("Arial", 14), width=20)
         self.label.grid(row=3, column=0, pady=10)
 
-        self.root.mainloop()
+    def grab_color(self):
+        
+        r,g,b = self.scale1.get(), self.scale2.get(), self.scale3.get()      
+        hex_color = '#%02x%02x%02x' % r % g % b
+        self.label.config(text=f"R: {r}, G: {g}, B: {b}")
+        self.color_canvas.config(background=hex_color, fontcolor=hex_color)
 
     def generate_gradient_image(self, width, height):
         img = Image.new("RGB", (width, height))
@@ -68,6 +75,9 @@ class colorwheel:
             hex_color = '#%02x%02x%02x' % rgb
             print(f"selected color: {hex_color}")
             self.label.config(text=f"selected color: {hex_color}")
+    
+    def run(self):
+        self.root.mainloop()
 
 if __name__ == '__main__':    
     picker = colorwheel()
