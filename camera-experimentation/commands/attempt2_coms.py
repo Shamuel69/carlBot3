@@ -15,6 +15,10 @@ class colorwheel:
         self.right_panel.pack(side="right")
 
         self.color_id = None
+        self.color_values = None
+        self.value_ticker = 0
+        self.upper_color = None
+        self.lower_color = None
 
         #sliders
         self.scale1 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="r", command=lambda x: self.updateblock())
@@ -49,12 +53,30 @@ class colorwheel:
         self.rgb_label = tk.Label(self.right_panel, text="RGB: ", font=("Arial", 10), width=20)
         self.rgb_label.grid(row=3, column=0, pady=5)
 
+        ##color labels
+        self.uppercolor_label = tk.Label(self.right_panel, text="upper color: ", font=("Arial", 8), width=25, background="#3a2865", fg="white")
+        self.uppercolor_label.grid(row=4, column=0, pady=2)
+
+        self.lowercolor_label = tk.Label(self.right_panel, text="lower color: ", font=("Arial", 8), width=25, background="#3a2865", fg="white")
+        self.lowercolor_label.grid(row=5, column=0, pady=2)
+
         #buttons
-        self.reset_button = tk.Button(self.right_panel, text="store color", font=("Arial", 8), width=10, command=lambda x: print(self.color_id))
-        self.reset_button.grid(row=5, column=1, pady=5)
-        self.reset_button.bind("<Button-1>")
+        self.store_button = tk.Button(self.right_panel, text="store color", font=("Arial", 10), width=10, command=self.store_color)
+        self.store_button.grid(row=5, column=1, pady=5)
+        self.store_button.bind("<Button-1>")
 
+    
 
+    def store_color(self):
+        self.value_ticker += 1
+        if self.value_ticker % 2 == 0:
+            self.lower_color = self.color_values
+            self.lowercolor_label.config(text=f"Lower Color: {self.lower_color}")
+        else:
+            self.upper_color = self.color_values
+            self.uppercolor_label.config(text=f"Upper Color: {self.upper_color}")
+        
+        
     def insert_color(self):
         color = self.color_id
         
@@ -68,7 +90,8 @@ class colorwheel:
 
         color = f'#{r:02x}{g:02x}{b:02x}'
         self.color_id = color
-        print(f"selected color: {self.color_id}")
+        self.color_values = [r, g, b]
+        print(f"selected color: {self.color_id}, second value {self.color_values}")
         self.rgb_label.config(text=f"selected color: {self.color_id}")
         self.color_canvas.config(bg=color)
 
@@ -94,16 +117,6 @@ class colorwheel:
                 img.putpixel((x, y), (int(r), int(g), int(b)))
         return img
 
-    # def generate_gradient_image(self, width, height):
-    #     img = Image.new("RGB", (width, height))
-    #     for x in range(width):
-    #         for y in range(height):
-    #             r = int((1-x / (width*.8)) * 255)
-    #             g = int((x / (width/.9)) * 255)
-    #             b = int((y / height*1.2) * 255)
-    #             img.putpixel((x, y), (r, g, b))
-    #     return img
-    
     
     def get_color(self, event):
         x, y = event.x, event.y
