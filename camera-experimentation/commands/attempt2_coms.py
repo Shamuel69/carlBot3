@@ -21,10 +21,9 @@ class colorwheel:
         self.upper_color = None
         self.lower_color = None
 
-        self.camera_settings = {"GaussianBlur": None, "Erosion": None, "Dilation": None,
-                                 "Closing": None, "Opening": None,"MorphologicalGradient": None,
-                                 "MedianBlur": None, "BilateralFilter": None, "tophat": None, 
-                                 "blackhat": None} 
+        self.camera_settings = {"GaussianBlur": None, "MedianBlur": None,"MorphologicalGradient": None, 
+                                 "Closing": None, "Opening": None, "Erosion": None, "Dilation": None,
+                                 "BilateralFilter": None, "tophat": None, "blackhat": None } 
         
         #sliders
         self.scale1 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="r", command=lambda x: self.updateblock())
@@ -84,10 +83,19 @@ class colorwheel:
         
         self.dropdown = tk.Menu(self.root)
         self.dropdown_var = tk.StringVar() # <- make function that updates this accordingly 
-        self.dropdown = tk.OptionMenu(self.right_panel, self.dropdown_var, "Erosion", "Dilation", "Erosion -> Dilation (Opening)", "Dilation -> Erosion (Closing)")
+        self.dropdown = tk.OptionMenu(self.right_panel, self.dropdown_var, "Erosion", "Dilation", "Opening (Erosion -> Dilation)", "Closing (Dilation -> Erosion)")
         
         self.one = tk.Checkbutton(self.right_panel, text="Blur", variable=self.onevar, onvalue=True)
         #make second dropdown that tells about which one to use: top hat or black hat, or render both (cpu intensive)
+
+        self.dropdownHats = tk.Menu(self.root)
+        self.dropdownHats_var = tk.StringVar() # <- make function that updates this accordingly 
+        self.dropdownHats = tk.OptionMenu(self.right_panel, self.dropdownHats_var, "TopHat", "BlackHat", "Render Both (cpu intensive)")
+
+        self.dropdownBlur = tk.Menu(self.root)
+        self.dropdownBlur_var = tk.StringVar() # <- make function that updates this accordingly 
+        self.dropdownBlur = tk.OptionMenu(self.right_panel, self.dropdownBlur_var, "Blur", "BilateralFilter", "MedianBlur", "GaussianBlur", "Render All (cpu intensive)")
+
 
         # self.dropdown.add_checkbutton(label="Blur", variable=self.onevar, onvalue=True)
         # self.dropdown.add_checkbutton(label="Erosion", variable=self.twovar, onvalue=True)
