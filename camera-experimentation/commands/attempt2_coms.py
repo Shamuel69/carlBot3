@@ -13,13 +13,19 @@ class colorwheel:
 
         self.right_panel = tk.Frame(self.root, width=width, height=height, background="#3a2865")
         self.right_panel.pack(side="right")
-
+        
+        #states and values
         self.color_id = None
         self.color_values = None
         self.value_ticker = 0
         self.upper_color = None
         self.lower_color = None
 
+        self.camera_settings = {"GaussianBlur": None, "Erosion": None, "Dilation": None,
+                                 "Closing": None, "Opening": None,"MorphologicalGradient": None,
+                                 "MedianBlur": None, "BilateralFilter": None, "tophat": None, 
+                                 "blackhat": None} 
+        
         #sliders
         self.scale1 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="r", command=lambda x: self.updateblock())
         self.scale2 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="g", command=lambda x: self.updateblock())
@@ -63,8 +69,44 @@ class colorwheel:
         #buttons
         self.store_button = tk.Button(self.right_panel, text="store color", font=("Arial", 10), width=10, command=self.store_color)
         self.store_button.grid(row=5, column=1, pady=5)
-        self.store_button.bind("<Button-1>")
 
+        self.start_button = tk.Button(self.right_panel, text="start machine", font=("Arial", 10), width=10, command=print("part 2"))
+        self.start_button.grid(row=6, column=1, pady=5)
+
+        self.onevar = tk.BooleanVar()
+        self.twovar = tk.BooleanVar()
+        self.threevar = tk.BooleanVar()
+        self.fourvar = tk.BooleanVar()
+        self.fivevar = tk.BooleanVar()
+        self.sixvar = tk.BooleanVar()
+        self.sevenvar = tk.BooleanVar()
+        self.eightvar = tk.BooleanVar()
+        
+        self.dropdown = tk.Menu(self.root)
+        self.dropdown_var = tk.StringVar() # <- make function that updates this accordingly 
+        self.dropdown = tk.OptionMenu(self.right_panel, self.dropdown_var, "Erosion", "Dilation", "Erosion -> Dilation (Opening)", "Dilation -> Erosion (Closing)")
+        
+        self.one = tk.Checkbutton(self.right_panel, text="Blur", variable=self.onevar, onvalue=True)
+        #make second dropdown that tells about which one to use: top hat or black hat, or render both (cpu intensive)
+
+        # self.dropdown.add_checkbutton(label="Blur", variable=self.onevar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="Erosion", variable=self.twovar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="Dilation", variable=self.threevar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="Closing", variable=self.fourvar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="Opening", variable=self.fivevar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="MorphologicalGradient", variable=self.sixvar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="TopHat", variable=self.sevenvar, onvalue=True)
+        # self.dropdown.add_checkbutton(label="BlackHat", variable=self.eightvar, onvalue=True)
+
+        # self.one = tk.Checkbutton(self.right_panel, text="Blur", variable=self.onevar, onvalue=True)
+        # self.two = tk.Checkbutton(self.right_panel, text="Erosion", variable=self.twovar, onvalue=True)
+        # self.three = tk.Checkbutton(self.right_panel, text="Dilation", variable=self.threevar, onvalue=True)
+        # self.four = tk.Checkbutton(self.right_panel, text="Closing", variable=self.fourvar, onvalue=True)
+        # self.five = tk.Checkbutton(self.right_panel, text="Opening", variable=self.fivevar, onvalue=True)
+        # self.six = tk.Checkbutton(self.right_panel, text="MorphologicalGradient", variable=self.sixvar, onvalue=True)
+        # self.seven = tk.Checkbutton(self.right_panel, text="TopHat", variable=self.sevenvar, onvalue=True)
+        # self.eight = tk.Checkbutton(self.right_panel, text="BlackHat", variable=self.eightvar, onvalue=True)
+        self.dropdown.grid(row=7, column=1, pady=5)
     
 
     def store_color(self):
@@ -77,6 +119,8 @@ class colorwheel:
             self.uppercolor_label.config(text=f"Upper Color: {self.upper_color}")
         
         
+
+
     def insert_color(self):
         color = self.color_id
         
