@@ -72,23 +72,15 @@ class colorwheel:
         self.start_button = tk.Button(self.right_panel, text="start machine", font=("Arial", 10), width=10, command=print("part 2"))
         self.start_button.grid(row=6, column=1, pady=5)
 
-        self.onevar = tk.BooleanVar()
-        self.twovar = tk.BooleanVar()
-        self.threevar = tk.BooleanVar()
-        self.fourvar = tk.BooleanVar()
-        self.fivevar = tk.BooleanVar()
-        self.sixvar = tk.BooleanVar()
-        self.sevenvar = tk.BooleanVar()
-        self.eightvar = tk.BooleanVar()
+        self.amountwindows = tk.Menu(self.root)
+        self.amountwindows_var = tk.StringVar() # <- make function that updates this accordingly
+        self.dropdown = tk.OptionMenu(self.amountwindows,  self.amountwindows_var, "1", "2", "3", "4", "5")
         
         self.dropdown = tk.Menu(self.root)
         self.dropdown_var = tk.StringVar() # <- make function that updates this accordingly 
         self.dropdown = tk.OptionMenu(self.right_panel, self.dropdown_var, "Erosion", "Dilation", "Opening (Erosion -> Dilation)", "Closing (Dilation -> Erosion)")
-        
-        self.one = tk.Checkbutton(self.right_panel, text="Blur", variable=self.onevar, onvalue=True)
-        #make second dropdown that tells about which one to use: top hat or black hat, or render both (cpu intensive)
 
-        self.dropdownHats = tk.Menu(self.root)
+        self.dropdownHats = tk.Menu(self.root) 
         self.dropdownHats_var = tk.StringVar() # <- make function that updates this accordingly 
         self.dropdownHats = tk.OptionMenu(self.right_panel, self.dropdownHats_var, "TopHat", "BlackHat", "Render Both (cpu intensive)")
 
@@ -96,26 +88,20 @@ class colorwheel:
         self.dropdownBlur_var = tk.StringVar() # <- make function that updates this accordingly 
         self.dropdownBlur = tk.OptionMenu(self.right_panel, self.dropdownBlur_var, "Blur", "BilateralFilter", "MedianBlur", "GaussianBlur", "Render All (cpu intensive)")
 
+        self.dropdown.grid(row=7, column=1, pady=2)
+        self.dropdownHats.grid(row=8, column=1, pady=2)
+        self.dropdownBlur.grid(row=9, column=1, pady=2)
 
-        # self.dropdown.add_checkbutton(label="Blur", variable=self.onevar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="Erosion", variable=self.twovar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="Dilation", variable=self.threevar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="Closing", variable=self.fourvar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="Opening", variable=self.fivevar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="MorphologicalGradient", variable=self.sixvar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="TopHat", variable=self.sevenvar, onvalue=True)
-        # self.dropdown.add_checkbutton(label="BlackHat", variable=self.eightvar, onvalue=True)
+    def toggle_window(self, window_settings_visible):
 
-        # self.one = tk.Checkbutton(self.right_panel, text="Blur", variable=self.onevar, onvalue=True)
-        # self.two = tk.Checkbutton(self.right_panel, text="Erosion", variable=self.twovar, onvalue=True)
-        # self.three = tk.Checkbutton(self.right_panel, text="Dilation", variable=self.threevar, onvalue=True)
-        # self.four = tk.Checkbutton(self.right_panel, text="Closing", variable=self.fourvar, onvalue=True)
-        # self.five = tk.Checkbutton(self.right_panel, text="Opening", variable=self.fivevar, onvalue=True)
-        # self.six = tk.Checkbutton(self.right_panel, text="MorphologicalGradient", variable=self.sixvar, onvalue=True)
-        # self.seven = tk.Checkbutton(self.right_panel, text="TopHat", variable=self.sevenvar, onvalue=True)
-        # self.eight = tk.Checkbutton(self.right_panel, text="BlackHat", variable=self.eightvar, onvalue=True)
-        self.dropdown.grid(row=7, column=1, pady=5)
-    
+
+        window_settings_visible = not window_settings_visible
+
+        if window_settings_visible:
+            window_settings_visible.deiconify() # reaplce with grid() func that shows the dropdown menu for the windows
+        else:
+            window_settings_visible.withdraw()
+        
 
     def store_color(self):
         self.value_ticker += 1
