@@ -20,10 +20,12 @@ class colorwheel:
         self.value_ticker = 0
         self.upper_color = None
         self.lower_color = None
+        self.window_settings = False
 
-        self.camera_settings = {"GaussianBlur": None, "MedianBlur": None,"MorphologicalGradient": None, 
-                                 "Closing": None, "Opening": None, "Erosion": None, "Dilation": None,
-                                 "BilateralFilter": None, "tophat": None, "blackhat": None } 
+        self.camera_settings = [] 
+        self.camera_settings_list = ['GaussianBlur', 'MedianBlur', 'MorphologicalGradient',
+                                    'Closing', 'Opening', 'Erosion', 'Dilation',
+                                    'BilateralFilter', 'tophat', 'blackhat']
         
         #sliders
         self.scale1 = tk.Scale(self.right_panel, from_=0, to=255, orient="horizontal", length=150, label="r", command=lambda x: self.updateblock())
@@ -73,8 +75,8 @@ class colorwheel:
         self.start_button.grid(row=6, column=1, pady=5)
 
         self.amountwindows = tk.Menu(self.root)
-        self.amountwindows_var = tk.StringVar() # <- make function that updates this accordingly
-        self.dropdown = tk.OptionMenu(self.amountwindows,  self.amountwindows_var, "1", "2", "3", "4", "5")
+        self.amountwindows_var = tk.IntVar() # <- make function that updates this accordingly
+        self.dropdownwindows = tk.OptionMenu(self.right_panel,  self.amountwindows_var, "0", "1", "2", "3", "4", "5", command=lambda x: self.toggle_window(self.window_settings))
         
         self.dropdown = tk.Menu(self.root)
         self.dropdown_var = tk.StringVar() # <- make function that updates this accordingly 
@@ -88,20 +90,45 @@ class colorwheel:
         self.dropdownBlur_var = tk.StringVar() # <- make function that updates this accordingly 
         self.dropdownBlur = tk.OptionMenu(self.right_panel, self.dropdownBlur_var, "Blur", "BilateralFilter", "MedianBlur", "GaussianBlur", "Render All (cpu intensive)")
 
+        self.dropdownwindows.grid(row=7, column=2, pady=2)
         self.dropdown.grid(row=7, column=1, pady=2)
         self.dropdownHats.grid(row=8, column=1, pady=2)
         self.dropdownBlur.grid(row=9, column=1, pady=2)
+    
+    def window_helper(self, iteration):
+        for iter, setting in enumerate(self.camera_settings_list):
+                    stored_setting = {}
+                    if iter == 0:
+                        self.listed_settings = tk.Label(self.right_panel, text=f"window{iteration}", font=("Arial", 8), width=10, background="#3a2865", fg="white")
+                        self.listed_settings.grid(row=11+iteration, column=0, pady=2)
+                    var = tk.BooleanVar()
+                    checkbox = tk.Checkbutton(self.right_panel, variable=var, onvalue=True)
+                    checkbox.grid(row=11+iteration, column=iter+1, pady=2)
+                    stored_setting[setting] = var
+
+        return stored_setting
 
     def toggle_window(self, window_settings_visible):
-
-
+        
         window_settings_visible = not window_settings_visible
 
-        if window_settings_visible:
-            window_settings_visible.deiconify() # reaplce with grid() func that shows the dropdown menu for the windows
+        if window_settings_visible >= 1:
+            for iter, setting in enumerate(self.camera_settings_list):
+                    self.listed_settings = tk.Label(self.right_panel, text=setting, font=("Arial", 8), width=10, background="#3a2865", fg="white")
+                    self.listed_settings.grid(row=10, column=iter+1, pady=2)
+
+            for iteration in range(self.amountwindows_var.get()):
+                print("penis2", self.amountwindows_var.get())
+                self.window_helper(iteration)
+                self.camera_settings.append(self.window_helper(iteration))
         else:
-            window_settings_visible.withdraw()
-        
+            if len(self.camera_settings) > 0:
+                for setting in self.camera_settings:
+                    for key in setting.keys():
+                        setting[key].destroy()
+            else:
+                pass
+
 
     def store_color(self):
         self.value_ticker += 1
@@ -112,9 +139,6 @@ class colorwheel:
             self.upper_color = self.color_values
             self.uppercolor_label.config(text=f"Upper Color: {self.upper_color}")
         
-        
-
-
     def insert_color(self):
         color = self.color_id
         
