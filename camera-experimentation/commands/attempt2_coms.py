@@ -83,7 +83,7 @@ class colorwheel:
         self.dropdownwindows = tk.OptionMenu(self.right_panel,  self.amountwindows_var, "0", "1", "2", "3", "4", "5", command=lambda x: self.toggle_window(self.window_settings))
         
         self.hsv = tk.BooleanVar()
-        self.hsv_button = tk.Checkbutton(self.right_panel, variable=self.hsv, onvalue=True)
+        self.hsv_button = tk.Checkbutton(self.right_panel, text="HSV", variable=self.hsv, onvalue=True)
         self.hsv_button.grid(row=7, column=0, pady=5)
 
 
