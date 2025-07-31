@@ -1,6 +1,8 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-
+import colorsys
+import cv2
+import numpy as np
 class colorwheel:
     def __init__(self, width=500, height=200):
         self.width = width
@@ -53,6 +55,8 @@ class colorwheel:
         self.canvas.image = self.photo_image
         self.canvas.bind("<Button-1>", self.get_color)
 
+        self.root.bind("<Button-1>", self.get_settings)
+
         #text labels
         self.label = tk.Label(self.right_panel, text="Click a color", font=("Arial", 10), width=20)
         self.label.grid(row=2, column=0, pady=5)
@@ -75,31 +79,24 @@ class colorwheel:
         self.start_button.grid(row=6, column=1, pady=5)
 
         self.amountwindows = tk.Menu(self.root)
-        self.amountwindows_var = tk.IntVar() # <- make function that updates this accordingly
+        self.amountwindows_var = tk.IntVar() 
         self.dropdownwindows = tk.OptionMenu(self.right_panel,  self.amountwindows_var, "0", "1", "2", "3", "4", "5", command=lambda x: self.toggle_window(self.window_settings))
         
-        self.dropdown = tk.Menu(self.root)
-        self.dropdown_var = tk.StringVar() # <- make function that updates this accordingly 
-        self.dropdown = tk.OptionMenu(self.right_panel, self.dropdown_var, "Erosion", "Dilation", "Opening (Erosion -> Dilation)", "Closing (Dilation -> Erosion)")
+        self.hsv = tk.BooleanVar()
+        self.hsv_button = tk.Checkbutton(self.right_panel, variable=self.hsv, onvalue=True)
+        self.hsv_button.grid(row=7, column=0, pady=5)
 
-        self.dropdownHats = tk.Menu(self.root) 
-        self.dropdownHats_var = tk.StringVar() # <- make function that updates this accordingly 
-        self.dropdownHats = tk.OptionMenu(self.right_panel, self.dropdownHats_var, "TopHat", "BlackHat", "Render Both (cpu intensive)")
 
-        self.dropdownBlur = tk.Menu(self.root)
-        self.dropdownBlur_var = tk.StringVar() # <- make function that updates this accordingly 
-        self.dropdownBlur = tk.OptionMenu(self.right_panel, self.dropdownBlur_var, "Blur", "BilateralFilter", "MedianBlur", "GaussianBlur", "Render All (cpu intensive)")
+        self.hsv_label = tk.Label(self.right_panel, text="HSV: ", font=("Arial", 10), width=20, background="#3a2865", fg="white")
+        self.hsv_label.grid(row=6, column=0, pady=5)
 
-        self.dropdownwindows.grid(row=7, column=2, pady=2)
-        self.dropdown.grid(row=7, column=1, pady=2)
-        self.dropdownHats.grid(row=8, column=1, pady=2)
-        self.dropdownBlur.grid(row=9, column=1, pady=2)
+        self.dropdownwindows.grid(row=7, column=1, pady=2)
     
     def window_helper(self, iteration):
+        stored_setting = {}
         for iter, setting in enumerate(self.camera_settings_list):
-                    stored_setting = {}
                     if iter == 0:
-                        self.listed_settings = tk.Label(self.right_panel, text=f"window{iteration}", font=("Arial", 8), width=10, background="#3a2865", fg="white")
+                        self.listed_settings = tk.Label(self.right_panel, text=f"window{iteration+1}", font=("Arial", 8), width=10, background="#3a2865", fg="white")
                         self.listed_settings.grid(row=11+iteration, column=0, pady=2)
                     var = tk.BooleanVar()
                     checkbox = tk.Checkbutton(self.right_panel, variable=var, onvalue=True)
@@ -107,9 +104,18 @@ class colorwheel:
                     stored_setting[setting] = var
 
         return stored_setting
+    
+    def get_settings(self, event):
+        "debugging tool, **NOT FOR USE**"
+        for iter, setting in enumerate(self.camera_settings):
+            camera = []
+            for key, var in setting.items():
+                camera.append((key, var.get()))
+            print(f"camera {iter+1}",camera, "\n")
+        print("=====================================================================")
+        
 
     def toggle_window(self, window_settings_visible):
-        
         window_settings_visible = not window_settings_visible
 
         if window_settings_visible >= 1:
@@ -118,7 +124,6 @@ class colorwheel:
                     self.listed_settings.grid(row=10, column=iter+1, pady=2)
 
             for iteration in range(self.amountwindows_var.get()):
-                print("penis2", self.amountwindows_var.get())
                 self.window_helper(iteration)
                 self.camera_settings.append(self.window_helper(iteration))
         else:
@@ -129,19 +134,28 @@ class colorwheel:
             else:
                 pass
 
-
     def store_color(self):
         self.value_ticker += 1
+        colors = self.color_values
+        added_text = ""
+
+        if self.hsv.get() == True:
+            hsvcnvt = np.uint8([[colors]])
+            colors = cv2.cvtColor(hsvcnvt, cv2.COLOR_RGB2HSV)
+            colors = [int(colors[0][0][0]), int(colors[0][0][1]), int(colors[0][0][2])]
+            added_text = " (HSV)"
         if self.value_ticker % 2 == 0:
-            self.lower_color = self.color_values
-            self.lowercolor_label.config(text=f"Lower Color: {self.lower_color}")
+            self.lower_color = colors
+            self.lowercolor_label.config(text=f"Lower Color{added_text}: {colors}")
         else:
-            self.upper_color = self.color_values
-            self.uppercolor_label.config(text=f"Upper Color: {self.upper_color}")
+            self.higher_color = colors
+            self.uppercolor_label.config(text=f"Upper Color{added_text}: {colors}")
         
     def insert_color(self):
         color = self.color_id
-        
+        if self.hsv.get() == True:
+            color = colorsys.rgb_to_hsv(self.color_id)
+
         self.rgb_label.config(text=f"selected color: {self.color_id}")
         self.color_canvas.config(bg=color)
 
