@@ -12,7 +12,6 @@ class colorwheel:
         self.root = tk.Tk()
         self.root.config(bg="#3a2865")
 
-
         self.base_panel = tk.Frame(self.root, width=width, height=height, bg="#3a2865")
         self.base_panel.pack()
 
