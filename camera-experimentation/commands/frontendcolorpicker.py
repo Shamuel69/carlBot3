@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
 import numpy as np
-
+from backendtest1 import process_data
 class colorwheel:
     def __init__(self, width=500, height=200):
         self.width = width
@@ -71,7 +71,7 @@ class colorwheel:
         self.store_button = tk.Button(self.right_panel, text="store color", font=("Arial", 10), width=10, command=self.store_color)
         self.store_button.grid(row=6, column=0, pady=2)
 
-        self.start_button = tk.Button(self.right_panel, text="start machine", font=("Arial", 10), width=10, command=print("part 2"))
+        self.start_button = tk.Button(self.right_panel, text="start machine", font=("Arial", 10), width=10, command=self.part2_start)
         self.start_button.grid(row=7, column=0, pady=2)
 
         self.amountwindows = tk.Menu(self.root)
@@ -90,6 +90,11 @@ class colorwheel:
 
         self.dropdownwindows.grid(row=7, column=1, pady=2)
     
+    def part2_start(self):
+        pass
+        # if len(self.camera_settings) > 0:
+        #     process_data(self.camera_settings, [self.lower_color, self.upper_color], self.hsv.get())
+
     def window_helper(self, iteration):
         stored_setting = {}
         for iter, setting in enumerate(self.camera_settings_list):
@@ -173,4 +178,6 @@ if __name__ == '__main__':
     picker = colorwheel()
     picker.run()
 
+    dictionary = {"lower_color": "gog", "upper_color": "gog", "hsv": True}
+    
 
