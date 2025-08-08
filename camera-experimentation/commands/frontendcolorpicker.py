@@ -91,9 +91,10 @@ class colorwheel:
         self.dropdownwindows.grid(row=7, column=1, pady=2)
     
     def part2_start(self):
-        pass
-        # if len(self.camera_settings) > 0:
-        #     process_data(self.camera_settings, [self.lower_color, self.upper_color], self.hsv.get())
+        # pass
+        if len(self.camera_settings) > 0:
+            print(f"test1 {self.lower_color} {self.upper_color}")
+            process_data(self.camera_settings, [self.lower_color, self.upper_color], self.hsv.get())
 
     def window_helper(self, iteration):
         stored_setting = {}
@@ -139,7 +140,7 @@ class colorwheel:
             self.lower_color = colors
             self.lowercolor_label.config(text=f"Lower Color{added_text}: {colors}")
         else:
-            self.higher_color = colors
+            self.upper_color = colors
             self.uppercolor_label.config(text=f"Upper Color{added_text}: {colors}")
 
     def updateblock(self):

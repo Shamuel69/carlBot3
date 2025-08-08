@@ -9,24 +9,24 @@ checkbox_settings = []
 lower_range = None
 upper_range = None
 
-def process_data(monitor_settings, colors, HSV=True, **kwargs):
+def process_data(monitor_settings, colors, HSV=True):
     global lower_range
     global upper_range 
 
     global checkbox_settings
 
-    lower_range = np.array(colors[0])
-    upper_range= np.array(colors[1])
-    
+    try:
+        lower_range = np.uint8([[colors[0]]])
+        upper_range= np.uint8([[colors[1]]])
+    except TypeError as e:
+        print(f"Error: {e} - please ensure that the correct data type was provided for colors.")
+
     if HSV != True:
         lower_range = cv2.cvtColor(lower_range, cv2.COLOR_RGB2HSV)
         upper_range = cv2.cvtColor(upper_range, cv2.COLOR_RGB2HSV)
 
-    if kwargs["window_amount"] >= 1:
-        display_data["window_amount"] = kwargs["window_amount"]
-
-    else:
-        display_data["window_amount"] = len(monitor_settings)
+    
+    display_data["window_amount"] = len(monitor_settings)
     
     checkbox_settings = monitor_settings
 
@@ -43,12 +43,14 @@ def startmachine():
 
         cv2.imshow('frame', frame)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
+        stacked = np.hstack((frame))
         for iteration in range(len(checkbox_settings)):
             masked = cv2.inRange(hsv, lower_range, upper_range)
             cv2.imshow(f'masked {iteration}', masked)
             result = cv2.bitwise_and(frame, frame, mask=masked)
-            cv2.imshow('result', result)
+            stacked[0].append(result)
+        
+        cv2.imshow('result', stacked)
 
         # hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         # masked = cv2.inRange(hsv, lower_range, upper_range)
