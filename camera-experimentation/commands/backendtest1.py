@@ -32,6 +32,9 @@ def process_data(monitor_settings, colors, HSV=True):
 
     startmachine()
 
+def add_filters(settings):
+    for key, var in settings.items():
+        print(key, var)
 
 def startmachine():
     print("machine started: stage 0")
@@ -41,23 +44,21 @@ def startmachine():
         if not ret:
             raise Exception("Could not read frame. Please make sure there is a camera connected.")
 
-        cv2.imshow('frame', frame)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        stacked = np.hstack((frame))
-        for iteration in range(len(checkbox_settings)):
-            masked = cv2.inRange(hsv, lower_range, upper_range)
-            cv2.imshow(f'masked {iteration}', masked)
-            result = cv2.bitwise_and(frame, frame, mask=masked)
-            stacked[0].append(result)
         
+        held_mask = []
+
+        for setting in checkbox_settings:
+            for key, var in setting.items():
+                if var == True:
+                    add_filters(setting)
+            masked = cv2.inRange(hsv, lower_range, upper_range)
+            result = cv2.bitwise_and(frame, frame, mask=masked)
+            held_mask.append(result)
+        
+        stacked = np.hstack((frame, *held_mask))
         cv2.imshow('result', stacked)
 
-        # hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        # masked = cv2.inRange(hsv, lower_range, upper_range)
-        # cv2.imshow('masked', masked)
-        # result = cv2.bitwise_and(frame, frame, mask=masked)
-        # cv2.imshow('result', result)
-        
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
