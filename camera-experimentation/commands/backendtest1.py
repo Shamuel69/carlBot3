@@ -32,9 +32,31 @@ def process_data(monitor_settings, colors, HSV=True):
 
     startmachine()
 
-def add_filters(settings):
-    for key, var in settings.items():
-        print(key, var)
+def add_filters(setting_int:int, image, kernel_size=5):
+    '''Input a integer corresponding to the index of the checkbox_settings list.\n\n0 = Gaussian Blur, 1 = Median Blur, 2 = Morphological Gradient, 3 = Morphological Closing, 4 = Morphological Opening, 5 = Erosion, 6 = Dilation, 7 = Bilarteral Filter, 8 = tophat, 9 = blackhat'''
+    kernel = np.ones((5, 5), np.uint8)
+    if setting_int == 0:
+        return cv2.GaussianBlur(image, (kernel_size, kernel_size), 0)
+    elif setting_int == 1:
+        return cv2.medianBlur(image, kernel_size)
+    elif setting_int == 2:
+        return cv2.morphologyEx(image, cv2.MORPH_GRADIENT, kernel)
+    elif setting_int == 3:
+        return cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+    elif setting_int == 4:
+        return cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
+    elif setting_int == 5:
+        return cv2.erode(image, kernel, iterations=1)
+    elif setting_int == 6:
+        return cv2.dilate(image, kernel, iterations=1)
+    elif setting_int == 7:
+        return cv2.bilateralFilter(image, 9, 75, 75)
+    elif setting_int == 8:
+        return cv2.morphologyEx(image, cv2.MORPH_TOPHAT, kernel)
+    elif setting_int == 9:
+        return cv2.morphologyEx(image, cv2.MORPH_BLACKHAT, kernel)
+    else:
+        raise Exception(f"Invalid setting index provided: {setting_int}")
 
 def startmachine():
     print("machine started: stage 0")
@@ -45,14 +67,15 @@ def startmachine():
             raise Exception("Could not read frame. Please make sure there is a camera connected.")
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        
+        masked = cv2.inRange(hsv, lower_range, upper_range)
+
         held_mask = []
 
         for setting in checkbox_settings:
-            for key, var in setting.items():
+            for index, var in enumerate(setting):
                 if var == True:
-                    add_filters(setting)
-            masked = cv2.inRange(hsv, lower_range, upper_range)
+                    masked = add_filters(index, hsv, 5)
+                
             result = cv2.bitwise_and(frame, frame, mask=masked)
             held_mask.append(result)
         

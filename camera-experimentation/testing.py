@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-import tkinter as tk
+# import tkinter as tk
 
-tk._test()
+# tk._test()
 cap = cv2.VideoCapture(0)
 
 lower_range = np.array([100, 150, 0])
@@ -19,19 +19,22 @@ while True:
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     masked = cv2.inRange(hsv, lower_range, upper_range)
-    showing_mask = cv2.imshow(frame, masked)
+    # showing_mask = cv2.imshow(frame, masked)
     result = cv2.bitwise_and(frame, frame, mask=masked)
 
-    masked = cv2.morphologyEx(masked, cv2.MORPH_OPEN, kernel)
+    # masked = cv2.morphologyEx(masked, cv2.MORPH_OPEN, kernel)
     masked = cv2.morphologyEx(masked, cv2.MORPH_CLOSE, kernel)
     masked = cv2.GaussianBlur(masked, (5, 5), 0)
 
-    eroded = cv2.erode(masked, kernel, iterations=1)
-    dilated = cv2.dilate(masked, kernel, iterations=1)
+    eroded = cv2.erode(masked, kernel, iterations=5)
+    dilated = cv2.dilate(masked, kernel, iterations=5)
+    
+    # masked = cv2.erode(masked, kernel, iterations=5)
+    # masked = cv2.dilate(masked, kernel, iterations=5)
 
-    dialated_mask = cv2.bitwise_and(frame, frame, mask=dilated)
+    dialated_mask = cv2.bitwise_and(frame, frame, mask=masked)
 
-    result = cv2.bitwise_and(frame, frame, mask=masked)
+    # result = cv2.bitwise_and(frame, frame, mask=masked)
     # combined = cv2.bitwise_or(frame, frame, mask=gay_mask)
 
     contours, _ = cv2.findContours(masked, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -58,4 +61,4 @@ while True:
         break
 
 cap.release()
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
