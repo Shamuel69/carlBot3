@@ -29,12 +29,13 @@ def process_data(monitor_settings, colors, HSV=True):
     display_data["window_amount"] = len(monitor_settings)
     
     checkbox_settings = monitor_settings
-
+    
     startmachine()
 
 def add_filters(setting_int:int, image, kernel_size=5):
     '''Input a integer corresponding to the index of the checkbox_settings list.\n\n0 = Gaussian Blur, 1 = Median Blur, 2 = Morphological Gradient, 3 = Morphological Closing, 4 = Morphological Opening, 5 = Erosion, 6 = Dilation, 7 = Bilarteral Filter, 8 = tophat, 9 = blackhat'''
     kernel = np.ones((5, 5), np.uint8)
+    print("hotline bing")
     if setting_int == 0:
         return cv2.GaussianBlur(image, (kernel_size, kernel_size), 0)
     elif setting_int == 1:
@@ -67,23 +68,33 @@ def startmachine():
             raise Exception("Could not read frame. Please make sure there is a camera connected.")
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         masked = cv2.inRange(hsv, lower_range, upper_range)
 
         held_mask = []
 
         for setting in checkbox_settings:
-            for index, var in enumerate(setting):
-                if var == True:
-                    masked = add_filters(index, hsv, 5)
-                
+            grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            modded_masked = masked
+            masked = cv2.inRange(hsv, lower_range, upper_range)
             result = cv2.bitwise_and(frame, frame, mask=masked)
+
+            for index, var in enumerate(setting):
+                if setting[var].get() == True:
+                    modded_masked = add_filters(index, modded_masked, 5)
+                    result = cv2.bitwise_and(grey_frame, grey_frame, mask=modded_masked)
+                    # print((masked.shape, masked.dtype), (grey_frame.shape, grey_frame.dtype))
+                
+            # result = cv2.bitwise_and(frame, masked_color, mask=masked)
+
             held_mask.append(result)
         
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            stacked = np.hstack((frame))
+            break
+
         stacked = np.hstack((frame, *held_mask))
         cv2.imshow('result', stacked)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
 
 def get_data(number:int, decrypted=False):
     temp_dict = {}

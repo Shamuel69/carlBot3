@@ -151,7 +151,7 @@ class colorwheel:
         color = f'#{r:02x}{g:02x}{b:02x}'
         self.color_id = color
         self.color_values = [r, g, b]
-        print(f"selected color: {self.color_id}, second value {self.color_values}")
+        # print(f"selected color: {self.color_id}, second value {self.color_values}")
 
         hsvcnvt = np.uint8([[[r, g, b]]])
         colors = cv2.cvtColor(hsvcnvt, cv2.COLOR_RGB2HSV)
